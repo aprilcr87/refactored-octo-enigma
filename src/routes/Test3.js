@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export const Test3 = () => {
   const comments = [
     {
@@ -68,9 +70,11 @@ export const Test3 = () => {
 
 
 const CommentList = (props) => {
+  const sortedComments = _.sortBy(props.comments, ['timestamp']);
+
   return (
-    <div>
-      {props.comments.map((c) => (
+    <div className="comment-list">
+      {sortedComments.map((c) => (
         <Comment key={c.id} text={c.text} author={c.author} />
       ))}
     </div>
@@ -79,10 +83,22 @@ const CommentList = (props) => {
 
 const Comment = (props) => {
   return (
-    <div>
-      <div>{props.author}</div>
-      <div>{props.text}</div>
-      <div>{props.timetamp}</div>
+    <div className="comment-container">
+      <div className="comment-content">
+      <div className="avatar">
+        <div className="avatar__letters">{getInitials(props.author)}</div>
+      </div>
+      <div>
+        <div>{props.author}</div>
+        <div>{props.text}</div>
+        <div>{props.timetamp}</div>
+      </div>
+      </div>
     </div>
   );
+};
+
+const getInitials = (name) => {
+  const initials = name.split(" ").map((name) => name[0]).join("");
+  return initials;
 };

@@ -1,37 +1,43 @@
 import "./App.css";
-import React from "react";
+import React, { useState } from "react";
 import { Home, Test1, Test2, Test3 } from "./routes";
+import Navigation from "./components/Navigation";
 
 const App = () => {
+  const [routes] = useState([
+    {
+      page: 'Home',
+      path: '/',
+      component: <Home />
+    },
+    {
+      page: 'Test 1',
+      path: '/test1',
+      component: <Test1 />
+    },
+    {
+      page: 'Test 2',
+      path: '/test2',
+      component: <Test2 />
+    },
+    {
+      page: 'Test 3',
+      path: '/test3',
+      component: <Test3 />
+    }
+  ]);
+
   return (
     <div className="app-container">
-      <header className="app-header">
-        <a href="/" className="app-link">
-          Home
-        </a>
-        <a href="/test1" className="app-link">
-          Test 1
-        </a>
-        <a href="/test2" className="app-link">
-          Test 2
-        </a>
-        <a href="/test3" className="app-link">
-          Test 3
-        </a>
-      </header>
+      <Navigation routes={routes} />
       <div>
-        <Route path="/">
-          <Home />
-        </Route>
-        <Route path="/test1">
-          <Test1 />
-        </Route>
-        <Route path="/test2">
-          <Test2 />
-        </Route>
-        <Route path="/test3">
-          <Test3 />
-        </Route>
+        {routes.map(r => {
+          return(
+            <Route path={r.path} key={r.page}>
+              {r.component}
+            </Route>
+          );
+        })}
       </div>
     </div>
   );
