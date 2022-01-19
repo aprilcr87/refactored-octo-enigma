@@ -75,7 +75,7 @@ const CommentList = (props) => {
   return (
     <div className="comment-list">
       {sortedComments.map((c) => (
-        <Comment key={c.id} text={c.text} author={c.author} />
+        <Comment key={c.id} text={c.text} author={c.author} avatarColor={c.avatarColor} />
       ))}
     </div>
   );
@@ -85,7 +85,7 @@ const Comment = (props) => {
   return (
     <div className="comment-container">
       <div className="comment-content">
-      <div className="avatar">
+      <div className="avatar" style={{backgroundColor: props.avatarColor}}>
         <div className="avatar__letters">{getInitials(props.author)}</div>
       </div>
       <div>

@@ -10,6 +10,16 @@
 
 .app-link {
   margin-right: 10px;
+  text-decoration: none;
+  color: red;
+}
+
+.app-link:hover {
+  text-decoration: underline;
+}
+
+.app-link:active {
+  color: blue;
 }
 
 
@@ -39,7 +49,6 @@
   height: 48px;
   width: 48px;
   margin-right: 10px;
-  background-color: black;
 }
 
 .avatar__letters {
