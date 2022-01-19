@@ -10,4 +10,50 @@
 
 .app-link {
   margin-right: 10px;
+  text-decoration: none;
+  color: red;
+}
+
+.app-link:hover {
+  text-decoration: underline;
+}
+
+.app-link:active {
+  color: blue;
+}
+
+
+.comment-list {
+  border: 1px solid black;
+  padding: 20px;
+}
+
+.comment-container {
+  margin-bottom: 15px;
+  border: 1px solid lightgray;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.comment-content {
+  display: inline-flex;
+  align-items: center;
+}
+
+.avatar {
+  display: inline-block;
+  vertical-align: middle;
+  position: relative;
+  color: #fff;
+  border-radius: 50%;
+  height: 48px;
+  width: 48px;
+  margin-right: 10px;
+}
+
+.avatar__letters {
+  left: 50%;
+  top: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
 }

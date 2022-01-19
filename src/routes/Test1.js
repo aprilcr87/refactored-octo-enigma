@@ -1,43 +1,101 @@
+import React, { useState, useCallback, useEffect } from 'react';
+import _ from 'lodash';
+
 export const Test1 = () => {
+  const [eventName, setEventName] = useState('');
+  const [listOfPeople, setListOfPeople] = useState([]);
+  const [selectedPeople, setSelectedPeople] = useState(
+    new Array(listOfPeople.length).fill(false)
+  );
+  const [eventLog, setEventLog] = useState([]);
+
+  useEffect(() => {
+    async function fetchPeople() {
+      let response = await fetch("http://test.seedcode.com/getPeople", {
+        method: 'GET',
+        headers: {
+          "Accept": 'application/jspn',
+          "Content-type": "application/json"
+        }
+      });
+      response = await response.json();
+      setListOfPeople(response);
+      console.log(response);
+    }
+    fetchPeople();
+  }, []);
+
+  const handleTextChange = useCallback((e) => {
+    setEventName(e.target.value);
+  }, []);
+
+  const handleCheckChange = useCallback((e, person) => {
+    const checked = [...selectedPeople];
+    if(e.target.checked) {
+      checked.push(person);
+    } else {
+      const index = checked.findIndex((p) => p.id === person.id);
+      checked.splice(index, 1);
+    }
+    setSelectedPeople(checked);
+    console.log(checked);
+  }, [selectedPeople]);
+
+  const handleSubmit = useCallback((e) => {
+    e.preventDefault();
+    if (eventName !== '' && !_.isEmpty(selectedPeople)) {
+        let event = { name: eventName, invitees: selectedPeople };
+        fetch("http://test.seedcode.com/createEvent", {
+          method: 'POST', 
+          headers: {
+            "Accept": 'application/jspn',
+            "Content-type": "application/json"
+          },
+          body: JSON.stringify(event)
+        }).then(response => {
+          if(response.ok) {
+            alert('Create event successfully');
+            let events = [...eventLog];
+            events.push({name: event.name});
+            setEventLog(events);
+          } else {
+            throw new Error('Something went wrong');
+          }
+        }).catch((error) => {
+          alert("There was an error creating the event " + error);
+        });
+      
+      setEventName('');
+      setSelectedPeople([]);
+    }
+  }, [eventName, selectedPeople]);
+
   return (
     <div>
-      <h4>Make a form for creating events</h4>
-      <p>
-        You've been tasked with creating a simple form for creating events. The user needs to title the event and select who they want to invite.
-        A dedicated designer will be handling the styling, so don't worry about making it pretty.
-      </p>
-      <p>
-        On page load, fetch the list of invitable people from
-        http://test.seedcode.com/getPeople using the javascript Fetch API.
-        Create the event planner inside this page. Once the event is ready, POST
-        the new event's data to http://test.seedcode.com/createEvent.
-      </p>
-      <h5>The user should be able to:</h5>
-      <ul>
-        <li>See if the initial data is loading</li>
-        <li>Name their event</li>
-        <li>See a full list of everyone who can be invited</li>
-        <li>Select the people they want to invite</li>
-        <li>Click a button to create the event</li>
-        <li>
-          Create more events after submitting an event, without having to
-          refresh the page
-        </li>
-        <li>See if the data is submitting</li>
-        <li>
-          Know if there was an error creating the event, or fetching the initial
-          data
-        </li>
-      </ul>
-      <h5>
-        The user should not be able to:
-      </h5>
-      <ul>
-        <li>
-          Create an event without a name
-        </li>
-        <li>Create an event without any invitees</li>
-      </ul>
+      <h4>Create a new event</h4>
+      <form onSubmit={(e) => handleSubmit(e)}>
+        <label htmlFor="event">Name of event</label>
+        <input type="text" id="event" value={eventName} required onChange={(e) => handleTextChange(e)} />
+        {listOfPeople && listOfPeople.map(p => {
+          return(
+            <div key={p.id}>
+              <input type="checkbox" 
+              id={p.id}
+              checked={selectedPeople.find((s) => s.id === p.id )}
+              onChange={(e) => handleCheckChange(e, p)} />
+              <label>{p.name}</label>
+            </div>
+          );
+        })}
+        <input type="submit" value="Submit" />
+      </form>
+      {!_.isEmpty(eventLog) ? eventLog.map(e => {
+        return(
+          <div>
+            <p>Event created: {e.name}</p>
+          </div>
+        );
+      }) : ''}
 
     </div>
   );
